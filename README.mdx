@@ -1,30 +1,119 @@
-# Task Manager Project
+Task Manager Project
 
-## Overview
+Overview
 A Django REST API project where users can register, login using JWT tokens, and manage their personal tasks. Includes role-based access (Admin/User), filters, search, pagination, and task CRUD operations.
 
-## Tech Stack
-- Python 3.9+
-- Django 5.x
-- Django REST Framework
-- djangorestframework-simplejwt
-- django-filter
-- SQLite
+Tech Stack
 
-## Setup Instructions
+Python 3.9+
 
-1. Clone the repository:
-```bash
-git clone 
+Django 5.x
+
+Django REST Framework
+
+djangorestframework-simplejwt
+
+django-filter
+
+SQLite
+
+Setup Instructions
+
+Clone the repository:
+
+git clone https://github.com/kajal-Ram/TASK_MANAGER_PROJECT.git
 cd TASK_MANAGER_PROJECT
-2. Create virtual environment and install dependencies:
+
+
+Create virtual environment and install dependencies:
+
 python -m venv env
+# Windows
 env\Scripts\activate
+# Linux/macOS
+# source env/bin/activate
 pip install -r requirements.txt
-3.Apply migrations:
+
+
+Apply migrations:
+
 python manage.py makemigrations
 python manage.py migrate
-4.Create superuser (Admin):
+
+
+Create superuser (Admin):
+
 python manage.py createsuperuser
-5.Run development server:
+
+
+Run development server:
+
 python manage.py runserver
+
+Roles & Permissions
+Role	Permissions
+Admin	Can view, create, update, delete any user's tasks
+User	Can view, create, update, delete only their own tasks
+API Endpoints
+Authentication
+Endpoint	Method	Description
+/api/auth/register/	POST	Register a new user
+/api/auth/login/	POST	Login and get JWT tokens
+/api/auth/refresh/	POST	Refresh access token
+Tasks
+Endpoint	Method	Description	Request Body	Example Response
+/api/tasks/	GET	List tasks (Admin: all, User: own)	None	[{"id":1,"title":"Finish Project","status":false,"owner":"user1"}]
+/api/tasks/	POST	Create a new task	{"title":"Finish Project","description":"Complete API","due_date":"2025-12-15T12:00:00Z"}	{ "id":1, "title":"Finish Project", "description":"Complete API", "status":false, "owner":"user1" }
+/api/tasks/<id>/	GET	Retrieve a task	None	{ "id":1, "title":"Finish Project", "status":false, "owner":"user1" }
+/api/tasks/<id>/	PUT/PATCH	Update a task	JSON data	Updated task JSON
+/api/tasks/<id>/	DELETE	Delete a task	None	204 No Content
+
+Query Parameters: ?page=1, ?search=<keyword>, ?ordering=due_date, ?status=True
+Headers (JWT Authentication):
+
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+Example JSON Response
+{
+  "id": 1,
+  "title": "Finish Django project",
+  "description": "Complete the Task Manager API",
+  "status": false,
+  "owner": "admin",
+  "created_at": "2025-12-11T02:30:00Z",
+  "updated_at": "2025-12-11T02:30:00Z"
+}
+
+Postman Collection
+
+File: TaskManager.postman_collection.json
+
+{
+  "info": {
+    "name": "Task Manager API",
+    "_postman_id": "12345-abcde",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register User",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"user1\",\n  \"password\": \"password123\"\n}" },
+        "url": { "raw": "http://127.0.0.1:8000/api/auth/register/" }
+      }
+    },
+    {
+      "name": "Login User",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"user1\",\n  \"password\": \"password123\"\n}" },
+        "url": { "raw": "http://127.0.0.1:8000/api/auth/login/" }
+      }
+    }
+  ]
+}
+
